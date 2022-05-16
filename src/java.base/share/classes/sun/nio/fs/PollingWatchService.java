@@ -62,9 +62,9 @@ class PollingWatchService
     extends AbstractWatchService
 {
     // Wait between polling thread creation and first poll (seconds)
-    private static final int POLLING_INIT_DELAY = 1;
+    private static final int POLLING_INIT_DELAY = 0;
     // Default time between polls (seconds)
-    private static final int DEFAULT_POLLING_INTERVAL = 2;
+    private static final int DEFAULT_POLLING_INTERVAL = 10;
 
     // map of registrations
     private final Map<Object, PollingWatchKey> map = new HashMap<>();

@@ -65,15 +65,16 @@ $(CLASSLIST_FILE): $(INTERIM_IMAGE_DIR)/bin/java$(EXECUTABLE_SUFFIX) $(CLASSLIST
 	$(call MakeDir, $(LINK_OPT_DIR))
 	$(call LogInfo, Generating $(patsubst $(OUTPUTDIR)/%, %, $@))
 	$(call LogInfo, Generating $(patsubst $(OUTPUTDIR)/%, %, $(JLI_TRACE_FILE)))
-	$(FIXPATH) $(INTERIM_IMAGE_DIR)/bin/java -XX:DumpLoadedClassList=$@.raw \
+ 	LD_LIBRARY_PATH=$(INTERIM_IMAGE_DIR)/lib:$(INTERIM_IMAGE_DIR)/lib/jli \
+	$(FIXPATH) LD_LIBRARY_PATH=$(INTERIM_IMAGE_DIR)/lib $(INTERIM_IMAGE_DIR)/bin/java -XX:DumpLoadedClassList=$@.raw \
 	    -Duser.language=en -Duser.country=US \
 	    -cp $(SUPPORT_OUTPUTDIR)/classlist.jar \
 	    build.tools.classlist.HelloClasslist $(LOG_DEBUG)
 	$(GREP) -v HelloClasslist $@.raw > $@.interim
-	$(FIXPATH) $(INTERIM_IMAGE_DIR)/bin/java -Xshare:dump \
+	$(FIXPATH) LD_LIBRARY_PATH=$(INTERIM_IMAGE_DIR)/lib $(INTERIM_IMAGE_DIR)/bin/java -Xshare:dump \
 	    -XX:SharedClassListFile=$@.interim -XX:SharedArchiveFile=$@.jsa \
 	    -Xmx128M -Xms128M $(LOG_INFO)
-	$(FIXPATH) $(INTERIM_IMAGE_DIR)/bin/java -XX:DumpLoadedClassList=$@.raw.2 \
+	$(FIXPATH) LD_LIBRARY_PATH=$(INTERIM_IMAGE_DIR)/lib $(INTERIM_IMAGE_DIR)/bin/java -XX:DumpLoadedClassList=$@.raw.2 \
 	    -XX:SharedClassListFile=$@.interim -XX:SharedArchiveFile=$@.jsa \
 	    -Djava.lang.invoke.MethodHandle.TRACE_RESOLVE=true \
 	    -Duser.language=en -Duser.country=US \
